@@ -1,14 +1,33 @@
 const express = require('express');
 const morgan = require('morgan');
+const cookieParser = require('cookie-parser');
+const bcrypt = require('bcryptjs');
+const session = require('express-session');
+const path = require('path');
 
-const routes = require('./routes');
+const { sessionSecret } = require('./config');
+// const indexRoutes = require('./routes/index');
+const userRoutes = require('./routes/user');
 
 const app = express();
 
 app.set('view engine', 'pug');
-
 app.use(morgan('dev'));
-app.use(routes);
+app.use(cookieParser(sessionSecret));
+app.use(session({
+    name: 'script-me.sid',
+    secret: sessionSecret,
+    resave: false,
+    saveUninitialized: false,
+}));
+
+
+app.use(express.urlencoded({ extended: false }));
+// app.use(restoreUser);
+//app.use('/', indexRoutes)
+app.use('/user', userRoutes)
+app.use(express.static(path.join(__dirname)));
+// app.use("/styles", express.static(__dirname + '/styles'));
 
 app.use((req, res, next) => {
     const err = new Error('The requested page couldn\'t be found.');
@@ -16,7 +35,7 @@ app.use((req, res, next) => {
     next(err);
 });
 
-// Custom error handlers.
+// Custom error handlers. 
 
 // Error handler to log errors.
 app.use((err, req, res, next) => {

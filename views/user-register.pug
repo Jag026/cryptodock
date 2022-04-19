@@ -1,0 +1,29 @@
+extends layout.pug
+
+block content
+  if errors
+    div(class='alert alert-danger' role='alert')
+      p The following error(s) occurred:
+      ul
+        each error in errors
+          li= error
+  form(action='/user/register' method='post')
+    input(type='hidden' name='_csrf' value=csrfToken)
+    div(class='form-group')
+      label(for='firstName') First Name
+      input(type='text' id='firstName' name='firstName' value='' class='form-control')
+    div(class='form-group')
+      label(for='lastName') Last Name
+      input(type='text' id='lastName' name='lastName' value='' class='form-control')
+    div(class='form-group')
+      label(for='emailAddress') Email
+      input(type='email' id='emailAddress' name='emailAddress' value='' class='form-control')
+    div(class='form-group')
+      label(for='password') Password
+      input(type='password' id='password' name='password' value='' class='form-control')
+    div(class='form-group')
+      label(for='confirmPassword') Confirm Password
+      input(type='password' id='confirmPassword' name='confirmPassword' value='' class='form-control')
+    div(class='py-4')
+      button(type='submit' class='btn btn-primary') Register
+      a(href='/' class='btn btn-warning ml-2') Cancel
