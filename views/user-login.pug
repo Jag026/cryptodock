@@ -1,0 +1,20 @@
+extends layout.pug
+
+block content
+  div(style={'display': 'flex', 'justify-content': 'space-between', 'margin-top': '100px'})
+   if errors
+     div(class='alert alert-danger' role='alert')
+       p The following error(s) occurred:
+       ul
+         each error in errors
+           li= error
+   form(class='loginForm', action='/user/login' method='post')
+     input(type='hidden' name='_csrf' value=csrfToken)
+     div(class='loginFormText', class='form-group')
+       label(for='emailAddress') Email
+       input(type='email' id='emailAddress' name='emailAddress' value='' class='form-control')
+     div(class='loginFormText', class='form-group')
+       label(for='password') Password
+       input(type='password' id='password' name='password' value='' class='form-control')
+     div(class='py-4')
+       button(type='submit' class='btn' style={"background-color": "#080F5B", "color": "white", "margin-right": "6px", "width": "80px"}) Login
