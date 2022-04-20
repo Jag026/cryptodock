@@ -25,6 +25,14 @@ module.exports = {
         type: Sequelize.STRING.BINARY,
         allowNull: false
       },
+      portfolioCoins: {
+        type: Sequelize.JSON,
+        allowNull: true
+      },
+      favoriteCoins: {
+        type: Sequelize.JSON,
+        allowNull: true
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

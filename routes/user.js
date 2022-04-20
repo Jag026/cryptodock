@@ -10,9 +10,13 @@ const router = express.Router();
 
 router.get('/login-index', csrfProtection, asyncHandler(async (req, res) => { 
     const user = await db.User.findOne({ where: { id: res.locals.user.id } });
+    const coinPortfolioJSON = await user.portfolioCoins;
+    const coinPortfolio = await JSON.parse(JSON.stringify(coinPortfolioJSON)); 
+    // console.log(coinPortfolio);
     res.render('login-index', {
         title: 'Register',
         user,
+        coinPortfolio,
         csrfToken: req.csrfToken(),
     });
 }));

@@ -17,6 +17,18 @@ module.exports = (sequelize, DataTypes) => {
     hashedPassword: {
       type: DataTypes.STRING.BINARY,
       allowNull: false
+    },
+    hashedPassword: {
+      type: DataTypes.STRING.BINARY,
+      allowNull: false
+    },
+    portfolioCoins: {
+      type: DataTypes.JSON,
+      allowNull: true
+    },
+    favoriteCoins: {
+      type: DataTypes.JSON,
+      allowNull: true
     }
   }, {});
   User.associate = function (models) {

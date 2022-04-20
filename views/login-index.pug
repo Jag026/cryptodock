@@ -2,3 +2,8 @@ extends layout.pug
 
 block content
   p You're logged in as #{user.firstName} #{user.lastName}
+  br
+  h4 Porfolio 
+   ul 
+    each val, key in coinPortfolio
+     li= key + ': ' + val
