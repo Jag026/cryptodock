@@ -5,6 +5,7 @@ const bcrypt = require('bcryptjs');
 const session = require('express-session');
 const path = require('path');
 
+const { restoreUser } = require('./auth');
 const { sessionSecret } = require('./config');
 // const indexRoutes = require('./routes/index');
 const userRoutes = require('./routes/user');
@@ -21,9 +22,8 @@ app.use(session({
     saveUninitialized: false,
 }));
 
-
 app.use(express.urlencoded({ extended: false }));
-// app.use(restoreUser);
+app.use(restoreUser);
 //app.use('/', indexRoutes)
 app.use('/user', userRoutes)
 app.use(express.static(path.join(__dirname)));

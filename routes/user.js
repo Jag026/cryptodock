@@ -8,6 +8,15 @@ const { loginUser } = require('../auth');
 
 const router = express.Router();
 
+router.get('/login-index', csrfProtection, asyncHandler(async (req, res) => { 
+    const user = await db.User.findOne({ where: { id: res.locals.user.id } });
+    res.render('login-index', {
+        title: 'Register',
+        user,
+        csrfToken: req.csrfToken(),
+    });
+}));
+
 router.get('/register', csrfProtection, (req, res) => {
     const user = db.User.build();
     res.render('user-register', {
@@ -85,7 +94,7 @@ router.post('/register', csrfProtection, userValidators,
             user.hashedPassword = hashedPassword;
             await user.save();
             loginUser(req, res, user);
-            res.redirect('/');
+            res.redirect('/user/login-index');
         } else {
             const errors = validatorErrors.array().map((error) => error.msg);
             res.render('user-register', {
@@ -113,7 +122,7 @@ const loginValidators = [
         .withMessage('Please provide a value for Password'),
 ];
 
-router.post('/user/login', csrfProtection, loginValidators,
+router.post('/login', csrfProtection, loginValidators,
     asyncHandler(async (req, res) => {
         const {
             emailAddress,
@@ -135,9 +144,8 @@ router.post('/user/login', csrfProtection, loginValidators,
                 if (passwordMatch) {
                     // If the password hashes match, then login the user
                     // and redirect them to the default route.
-                    // TODO Login the user.
                     loginUser(req, res, user);
-                    return res.redirect('/');
+                    res.redirect('/user/login-index');
                 }
             }
 
@@ -147,8 +155,9 @@ router.post('/user/login', csrfProtection, loginValidators,
             errors = validatorErrors.array().map((error) => error.msg);
         }
 
-        res.render('user-login', {
-            title: 'Login',
+        res.render('user/login', {
+            title: 'Errors',
+            user,
             emailAddress,
             errors,
             csrfToken: req.csrfToken(),
