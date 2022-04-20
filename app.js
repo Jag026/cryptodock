@@ -15,7 +15,7 @@ app.set('view engine', 'pug');
 app.use(morgan('dev'));
 app.use(cookieParser(sessionSecret));
 app.use(session({
-    name: 'script-me.sid',
+    name: 'cryptodock.sid',
     secret: sessionSecret,
     resave: false,
     saveUninitialized: false,
