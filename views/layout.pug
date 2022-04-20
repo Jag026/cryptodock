@@ -10,7 +10,7 @@ html
      div
       a(class='navbar-brand' href='/user' style={"color": "white"}) Cryptodock
      if locals.authenticated
-         span(class='navbar-text px-4' style={"margin-left": "32px"}) #{user.firstName}
+         span(class='navbar-text px-4' style={"margin-left": "32px"}) Logged In As #{user.firstName}
          form(class='form-inline pr-4' action='/user/logout' method='post')
            button(class='btn btn-sm btn-warning' type='submit') Logout
      else
