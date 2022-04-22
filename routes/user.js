@@ -245,9 +245,11 @@ const callPrice = async (cryptoData, coinName) => {
 
 const setCoinPriceObj = async (arr, data) => {
     let obj = {};
-    await arr.forEach(coinName => {
-        price = callPrice(data, coinName);
+    await arr.forEach(async coinName => {
+        let price = await callPrice(data, coinName);
         obj[coinName] = price;
+        console.log('Price:' + price);
+        console.log(obj);
     })
     return obj;
 }
