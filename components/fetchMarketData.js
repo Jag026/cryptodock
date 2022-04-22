@@ -5,7 +5,7 @@ const url = 'https://rest.coinapi.io/v1/assets';
 const fetchMarketData = fetch(url, {
     method: 'GET',
     headers: {
-        'X-CoinAPI-Key': '2352E3E2-7C3C-45D5-902F-6DE153D03E5F',
+        'X-CoinAPI-Key': 'DF8B9104-DDF2-4D58-A4BF-8B6717B7D530',
         "Content-Type": "application/json"
     }
 })
@@ -16,7 +16,7 @@ const fetchMarketData = fetch(url, {
 
 
 const printAddress = async () => {
-    const a = await fetchMarketData();
+    const a = await fetchMarketData;
     console.log(a);
 };
 

@@ -4,5 +4,4 @@ block content
   h4 #{price}
 
   each val, key in newObj
-    p= val
-    p= key
+    p= `${key}: $${val}`

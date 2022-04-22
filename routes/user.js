@@ -247,9 +247,7 @@ const setCoinPriceObj = async (arr, data) => {
     let obj = {};
     await arr.forEach(async coinName => {
         let price = await callPrice(data, coinName);
-        obj[coinName] = price;
-        console.log('Price:' + price);
-        console.log(obj);
+        obj[coinName] = price.toFixed(2);
     })
     return obj;
 }
@@ -265,6 +263,20 @@ router.get('/grab-coin', setMarketData, asyncHandler(async (req, res) => {
     */
 
     res.render('portfolio-test', { newObj })
+}));
+
+router.get('/favorites', setMarketData, asyncHandler(async (req, res) => {
+    const data = await req.marketData;
+    const user = await db.User.findOne({ where: { id: res.locals.user.id } });
+    const favoriteArrJson = await user.favoriteCoins;
+    const newObj = await setCoinPriceObj(favoriteArrJson, data);
+    /*
+    const data = await req.marketData;
+    const coinArr = ['Bitcoin', 'Ethereum', 'Litecoin'];
+    price = await callPrice(data, 'Bitcoin');
+    */
+
+    res.render('favorites-test', { newObj })
 }));
 
 module.exports = router;
