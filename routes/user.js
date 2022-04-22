@@ -9,6 +9,7 @@ const fetch = require('node-fetch');
 
 const router = express.Router();
 
+
 router.get('/login-index', csrfProtection, asyncHandler(async (req, res) => { 
     const user = await db.User.findOne({ where: { id: res.locals.user.id } });
     const coinPortfolioJSON = await user.portfolioCoins;
@@ -227,11 +228,11 @@ const fetchPrice = (coinName) => fetch(url, {
     });
 
     */
-const fetchPrice = (cryptoData, coinName) => {
+const fetchPrice = (cryptoData, coinId) => {
     let coin = '';
         cryptoData.forEach(crypto => {
             // console.log(user['name'])
-            if (crypto['name'] === coinName) {
+            if (crypto['asset_id'] === coinId) {
                 coin = crypto
             }
         })
@@ -245,15 +246,15 @@ const callPrice = async (cryptoData, coinName) => {
 
 const setCoinPriceObj = async (arr, data) => {
     let obj = {};
-    await arr.forEach(async coinName => {
-        let price = await callPrice(data, coinName);
-        obj[coinName] = price.toFixed(2);
+    await arr.forEach(async coinId => {
+        let price = await callPrice(data, coinId);
+        obj[coinId] = price.toFixed(2);
     })
     return obj;
 }
 router.get('/grab-coin', setMarketData, asyncHandler(async (req, res) => {
     const data = await req.marketData;
-    const coinArr = ['Bitcoin', 'Ethereum', 'Litecoin'];
+    const coinArr = ['BTC', 'ETH', 'LTC'];
     const newObj = await setCoinPriceObj(coinArr, data);
     console.log(newObj);
     /*
@@ -270,11 +271,6 @@ router.get('/favorites', setMarketData, asyncHandler(async (req, res) => {
     const user = await db.User.findOne({ where: { id: res.locals.user.id } });
     const favoriteArrJson = await user.favoriteCoins;
     const newObj = await setCoinPriceObj(favoriteArrJson, data);
-    /*
-    const data = await req.marketData;
-    const coinArr = ['Bitcoin', 'Ethereum', 'Litecoin'];
-    price = await callPrice(data, 'Bitcoin');
-    */
 
     res.render('favorites-test', { newObj })
 }));

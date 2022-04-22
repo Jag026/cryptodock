@@ -26,10 +26,9 @@ app.use(session({
 
 app.use(express.urlencoded({ extended: false }));
 app.use(restoreUser);
-//app.use('/', indexRoutes)
 app.use('/user', userRoutes)
 app.use(express.static(path.join(__dirname)));
-// app.use("/styles", express.static(__dirname + '/styles'));
+app.use("/styles", express.static(__dirname + '/styles'));
 
 app.use((req, res, next) => {
     const err = new Error('The requested page couldn\'t be found.');

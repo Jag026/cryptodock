@@ -4,6 +4,8 @@ block content
   p You're logged in as #{user.firstName} #{user.lastName}
   br
   h4 Porfolio 
-   ul 
     each val, key in coinPortfolio
-     li= key + ': ' + val
+     div(style={'display':'flex', 'margin-bottom': '20px'})
+      img(src=`../public/crypto-icons/${key.toLowerCase()}.svg` style={'width':'25px', 'margin-right': '20px'})
+      h5= key + ': ' + val
+      br
