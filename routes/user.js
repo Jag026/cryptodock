@@ -243,11 +243,26 @@ const callPrice = async (cryptoData, coinName) => {
     return a;
 };
 
+const setCoinPriceObj = async (arr, data) => {
+    let obj = {};
+    await arr.forEach(coinName => {
+        price = callPrice(data, coinName);
+        obj[coinName] = price;
+    })
+    return obj;
+}
 router.get('/grab-coin', setMarketData, asyncHandler(async (req, res) => {
     const data = await req.marketData;
+    const coinArr = ['Bitcoin', 'Ethereum', 'Litecoin'];
+    const newObj = await setCoinPriceObj(coinArr, data);
+    console.log(newObj);
+    /*
+    const data = await req.marketData;
+    const coinArr = ['Bitcoin', 'Ethereum', 'Litecoin'];
     price = await callPrice(data, 'Bitcoin');
+    */
 
-    res.render('portfolio-test', { price })
+    res.render('portfolio-test', { newObj })
 }));
 
 module.exports = router;
