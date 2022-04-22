@@ -5,6 +5,7 @@ const bcrypt = require('bcryptjs');
 const db = require('../db/models');
 const { csrfProtection, asyncHandler } = require('./utils');
 const { loginUser, logoutUser } = require('../auth');
+const fetch = require('node-fetch');
 
 const router = express.Router();
 
@@ -172,5 +173,81 @@ router.post('/logout', (req, res) => {
     logoutUser(req, res);
     res.redirect('/user/login');
 });
+
+
+const url = 'https://rest.coinapi.io/v1/assets';
+
+const fetchMarketData = fetch(url, {
+    method: 'GET',
+    headers: {
+        'X-CoinAPI-Key': 'DF8B9104-DDF2-4D58-A4BF-8B6717B7D530',
+        "Content-Type": "application/json"
+    }
+})
+    .then((response) => response.json())
+    .then((data) => {
+        return data;
+    });
+
+//middleware that sets market data 
+const setMarketData = (req, res, next) => {
+    req.marketData = fetchMarketData;
+    next();
+};
+
+/*
+async function fetchPrice(cryptoData, coinName) {
+    const data = await cryptoData;
+    data.forEach((crypto) => {
+        if (crypto['name'] === coinName) {
+            return crypto['price_usd'];
+        }
+    })
+}
+
+
+
+const fetchPrice = (coinName) => fetch(url, {
+    method: 'GET',
+    headers: {
+        'X-CoinAPI-Key': 'DF8B9104-DDF2-4D58-A4BF-8B6717B7D530',
+        "Content-Type": "application/json"
+    }
+})
+    .then((response) => response.json())
+    .then((data) => {
+        let coin = {};
+        data.forEach(crypto => {
+            // console.log(user['name'])
+            if (crypto['name'] === coinName) {
+                coin = crypto
+            }
+        })
+        return coin['price_usd'];
+    });
+
+    */
+const fetchPrice = (cryptoData, coinName) => {
+    let coin = '';
+        cryptoData.forEach(crypto => {
+            // console.log(user['name'])
+            if (crypto['name'] === coinName) {
+                coin = crypto
+            }
+        })
+        return coin['price_usd'];
+    };
+
+const callPrice = async (cryptoData, coinName) => {
+    const a = await fetchPrice(cryptoData, coinName);
+    return a;
+};
+
+router.get('/grab-coin', setMarketData, asyncHandler(async (req, res) => {
+    const data = await req.marketData;
+    price = await callPrice(data, 'Bitcoin');
+
+    res.render('portfolio-test', { price })
+}));
 
 module.exports = router;

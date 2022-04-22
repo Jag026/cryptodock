@@ -1,6 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
+const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const session = require('express-session');
 const path = require('path');
@@ -9,11 +10,12 @@ const { restoreUser } = require('./auth');
 const { sessionSecret } = require('./config');
 // const indexRoutes = require('./routes/index');
 const userRoutes = require('./routes/user');
-
 const app = express();
 
 app.set('view engine', 'pug');
 app.use(morgan('dev'));
+app.use(cors());
+app.use(express.json());
 app.use(cookieParser(sessionSecret));
 app.use(session({
     name: 'cryptodock.sid',
