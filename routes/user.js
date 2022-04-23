@@ -191,7 +191,7 @@ const fetchMarketData = fetch(url, {
     });
 
 
-const printAddress = async () => {
+const grabData = async () => {
     const a = await fetchMarketData;
     return a
 };
@@ -200,57 +200,37 @@ const printAddress = async () => {
 
 //middleware that sets market data 
 const setMarketData = async (req, res, next) => {
-    marketData = await printAddress();
+    marketData = await grabData();
     req.marketData = await marketData['data']
     next();
 };
-
-/*
-async function fetchPrice(cryptoData, coinName) {
-    const data = await cryptoData;
-    data.forEach((crypto) => {
-        if (crypto['name'] === coinName) {
-            return crypto['price_usd'];
-        }
-    })
-}
-
-
-
-const fetchPrice = (coinName) => fetch(url, {
-    method: 'GET',
-    headers: {
-        'X-CoinAPI-Key': 'DF8B9104-DDF2-4D58-A4BF-8B6717B7D530',
-        "Content-Type": "application/json"
-    }
-})
-    .then((response) => response.json())
-    .then((data) => {
-        let coin = {};
-        data.forEach(crypto => {
-            // console.log(user['name'])
-            if (crypto['name'] === coinName) {
-                coin = crypto
-            }
-        })
-        return coin['price_usd'];
-    });
-
-    */
-const fetchPrice = (cryptoData, coinId) => {
+//fetches price datapoints: price, volume, etc
+const fetchPriceData = (cryptoData, symbol, dataPointStr) => {
     let coin = '';
         cryptoData.forEach(crypto => {
-            // console.log(user['name'])
-            if (crypto['asset_id'] === coinId) {
+            if (crypto['symbol'] === symbol) {
                 coin = crypto
             }
         })
-        return coin['price_usd'];
+    return coin['quote']['USD'][dataPointStr];
     };
 
+    // not used at the moment
 const callPrice = async (cryptoData, coinName) => {
     const a = await fetchPrice(cryptoData, coinName);
     return a;
+};
+
+// fetches datapoint other than price
+const fetchDataPoint = (cryptoData, symbol, dataPointStr) => {
+    dataPoint = dataPointStr;
+    let coin = '';
+    cryptoData.forEach(crypto => {
+        if (crypto['symbol'] === symbol) {
+            coin = crypto
+        }
+    })
+    return coin[dataPointStr];
 };
 
 const setCoinPriceObj = async (arr, data) => {
@@ -272,7 +252,7 @@ router.get('/grab-coin', setMarketData, asyncHandler(async (req, res) => {
 }));
 
 router.get('/favorites', setMarketData, asyncHandler(async (req, res) => {
-    console.log(await req.marketData[0]);
+    console.log(fetchPrice(req.marketData, 'BTC', 'volume_24h'));
     /*
     const data = await req.marketData;
     const user = await db.User.findOne({ where: { id: res.locals.user.id } });
