@@ -1,11 +1,11 @@
 const fetch = require('node-fetch');
 
-const url = 'https://rest.coinapi.io/v1/assets';
+const url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest';
 
 const fetchMarketData = fetch(url, {
     method: 'GET',
     headers: {
-        'X-CoinAPI-Key': 'DF8B9104-DDF2-4D58-A4BF-8B6717B7D530',
+        'X-CMC_PRO_API_KEY': '1b02cf34-2998-4adc-8c45-c43ac970e440',
         "Content-Type": "application/json"
     }
 })
@@ -21,4 +21,3 @@ const printAddress = async () => {
 };
 
 printAddress();
-

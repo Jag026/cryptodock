@@ -1,8 +1,8 @@
 const fetch = require('node-fetch');
 
-const url = 'https://rest.coinapi.io/v1/assets';
+const url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest';
 const header = {
-    'X-CoinAPI-Key': 'DF8B9104-DDF2-4D58-A4BF-8B6717B7D530',
+    'X-CMC_PRO_API_KEY': '1b02cf34-2998-4adc-8c45-c43ac970e440',
     "Content-Type": "application/json"
 }
 
@@ -12,18 +12,20 @@ const fetchPrice = (coinName) => fetch(url, {
 })
     .then((response) => response.json())
     .then((data) => {
+        // console.log(data['data'])
         let coin = {};
-        data.forEach(crypto => {
-            // console.log(user['name'])
-            if (crypto['name'] === coinName) {
+        data['data'].forEach(crypto => {
+            // console.log(crypto)
+            if (crypto['symbol'] === coinName) {
                 coin = crypto
+                console.log(coin['quote']['USD']['price'])
             }
         })
-        return coin['price_usd'];
+        return coin['quote']['USD']['price'];
     });
 
 const printAddress = async () => {
-    const a = await fetchPrice('Litecoin');
+    const a = await fetchPrice('LTC');
     console.log(a);
 };
 
