@@ -176,12 +176,12 @@ router.post('/logout', (req, res) => {
 });
 
 
-const url = 'https://rest.coinapi.io/v1/assets';
+const url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest';
 
 const fetchMarketData = fetch(url, {
     method: 'GET',
     headers: {
-        'X-CoinAPI-Key': 'DF8B9104-DDF2-4D58-A4BF-8B6717B7D530',
+        'X-CMC_PRO_API_KEY': '1b02cf34-2998-4adc-8c45-c43ac970e440',
         "Content-Type": "application/json"
     }
 })
@@ -190,9 +190,18 @@ const fetchMarketData = fetch(url, {
         return data;
     });
 
+
+const printAddress = async () => {
+    const a = await fetchMarketData;
+    return a
+};
+
+
+
 //middleware that sets market data 
-const setMarketData = (req, res, next) => {
-    req.marketData = fetchMarketData;
+const setMarketData = async (req, res, next) => {
+    marketData = await printAddress();
+    req.marketData = await marketData['data']
     next();
 };
 
@@ -253,26 +262,25 @@ const setCoinPriceObj = async (arr, data) => {
     return obj;
 }
 router.get('/grab-coin', setMarketData, asyncHandler(async (req, res) => {
+    console.log(req.marketData);
     const data = await req.marketData;
     const coinArr = ['BTC', 'ETH', 'LTC'];
     const newObj = await setCoinPriceObj(coinArr, data);
-    console.log(newObj);
-    /*
-    const data = await req.marketData;
-    const coinArr = ['Bitcoin', 'Ethereum', 'Litecoin'];
-    price = await callPrice(data, 'Bitcoin');
-    */
+
 
     res.render('portfolio-test', { newObj })
 }));
 
 router.get('/favorites', setMarketData, asyncHandler(async (req, res) => {
+    console.log(await req.marketData[0]);
+    /*
     const data = await req.marketData;
     const user = await db.User.findOne({ where: { id: res.locals.user.id } });
     const favoriteArrJson = await user.favoriteCoins;
     const newObj = await setCoinPriceObj(favoriteArrJson, data);
-
     res.render('favorites-test', { newObj })
+    */
+    res.render('favorites-test')
 }));
 
 module.exports = router;
