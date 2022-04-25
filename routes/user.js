@@ -243,9 +243,15 @@ const setfavoritesObj = async (arr, data) => {
         obj['symbol'] = symbol;
         const price = fetchPriceData(data, coinSymbol, 'price')
         obj['price'] = price.toFixed(2);
-       coinArr.push(obj);
         const market_cap = fetchPriceData(data, coinSymbol, 'market_cap')
         obj['market_cap'] = market_cap.toFixed(0);
+        const volume_24h = fetchPriceData(data, coinSymbol, 'volume_24h')
+        obj['volume_24h'] = volume_24h.toFixed(0);
+        const percent_change_24h = fetchPriceData(data, coinSymbol, 'percent_change_24h')
+        obj['percent_change_24h'] = percent_change_24h.toFixed(2);
+
+        coinArr.push(obj);
+
     })
     return await coinArr;
 }
