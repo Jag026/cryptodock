@@ -24,4 +24,4 @@ block content
                td= `$ ${coin.price}` 
                td= `$ ${coin.market_cap}` 
                td= `$ ${coin.volume_24h}` 
-               td= ` ${coin.percent_change_24h}%`
+               td= `$${(coin.price * (coin.percent_change_24h / 100)).toFixed(2)} ${coin.percent_change_24h}%)`

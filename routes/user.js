@@ -244,7 +244,7 @@ const setfavoritesObj = async (arr, data) => {
         const price = fetchPriceData(data, coinSymbol, 'price')
         obj['price'] = price.toFixed(2);
         const market_cap = fetchPriceData(data, coinSymbol, 'market_cap')
-        obj['market_cap'] = market_cap.toFixed(0);
+        obj['market_cap'] = market_cap.toLocaleString('en-US').split('.')[0]
         const volume_24h = fetchPriceData(data, coinSymbol, 'volume_24h')
         obj['volume_24h'] = volume_24h.toFixed(0);
         const percent_change_24h = fetchPriceData(data, coinSymbol, 'percent_change_24h')
@@ -255,16 +255,6 @@ const setfavoritesObj = async (arr, data) => {
     })
     return await coinArr;
 }
-/*
-const setCoinObj = async (arr, data) => {
-    let obj = {};
-    await arr.forEach(async coinId => {
-        let price = await callPrice(data, coinId);
-        obj[coinId] = price.toFixed(2);
-    })
-    return obj;
-}
- */
 
 router.get('/grab-coin', setMarketData, asyncHandler(async (req, res) => {
     console.log(req.marketData);
@@ -277,16 +267,8 @@ router.get('/grab-coin', setMarketData, asyncHandler(async (req, res) => {
 }));
 
 router.get('/favorites', setMarketData, asyncHandler(async (req, res) => {
-    const arr = await setfavoritesObj(['BTC', 'ETH', 'LTC', 'BCH'], req.marketData)
+    const arr = await setfavoritesObj(['BTC', 'ETH', 'LTC', 'BCH', 'XRP'], req.marketData)
     const newArr = ['hello', 'sup']
-    console.log(fetchPriceData(req.marketData, 'BTC', 'price'))
-    /*
-    const data = await req.marketData;
-    const user = await db.User.findOne({ where: { id: res.locals.user.id } });
-    const favoriteArrJson = await user.favoriteCoins;
-    const newObj = await setCoinPriceObj(favoriteArrJson, data);
-    res.render('favorites-test', { newObj })
-    */
     res.render('favorites-test', { arr })
 }));
 
