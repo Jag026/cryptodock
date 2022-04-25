@@ -237,14 +237,15 @@ const setfavoritesObj = async (arr, data) => {
     let coinArr = [];
     await arr.forEach(async coinSymbol => {
         let obj = {};
-        const name = await fetchDataPoint(data, coinSymbol, 'name')
+        const name = fetchDataPoint(data, coinSymbol, 'name')
         obj['name'] = name;
-        const symbol = await fetchDataPoint(data, coinSymbol, 'symbol')
+        const symbol = fetchDataPoint(data, coinSymbol, 'symbol')
         obj['symbol'] = symbol;
-        const price = await fetchPriceData(data, coinSymbol, 'price')
+        const price = fetchPriceData(data, coinSymbol, 'price')
         obj['price'] = price.toFixed(2);
-
-        coinArr.push(obj);
+       coinArr.push(obj);
+        const market_cap = fetchPriceData(data, coinSymbol, 'market_cap')
+        obj['market_cap'] = market_cap.toFixed(0);
     })
     return await coinArr;
 }
@@ -270,7 +271,7 @@ router.get('/grab-coin', setMarketData, asyncHandler(async (req, res) => {
 }));
 
 router.get('/favorites', setMarketData, asyncHandler(async (req, res) => {
-    const arr = await setfavoritesObj(['BTC', 'ETH'], req.marketData)
+    const arr = await setfavoritesObj(['BTC', 'ETH', 'LTC', 'BCH'], req.marketData)
     const newArr = ['hello', 'sup']
     console.log(fetchPriceData(req.marketData, 'BTC', 'price'))
     /*
