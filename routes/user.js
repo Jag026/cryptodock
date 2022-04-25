@@ -216,8 +216,8 @@ const fetchPriceData = (cryptoData, symbol, dataPointStr) => {
     };
 
     // not used at the moment
-const callPrice = async (cryptoData, coinName) => {
-    const a = await fetchPrice(cryptoData, coinName);
+const callPrice = async (cryptoData, symbol, dataPointStr) => {
+    const a = await fetchPriceData(cryptoData, symbol, dataPointStr);
     return a;
 };
 
@@ -233,7 +233,25 @@ const fetchDataPoint = (cryptoData, symbol, dataPointStr) => {
     return coin[dataPointStr];
 };
 
-const setCoinPriceObj = async (arr, data) => {
+const setfavoritesObj = async (arr, data) => {
+    let coinArr = [];
+    await arr.forEach(async coinSymbol => {
+        let obj = {};
+        const name = await fetchDataPoint(data, coinSymbol, 'name')
+        obj['name'] = name;
+        const symbol = await fetchDataPoint(data, coinSymbol, 'symbol')
+        obj['symbol'] = symbol;
+        const price = await fetchPriceData(data, coinSymbol, 'price')
+        obj['price'] = price;
+        console.log(price)
+
+
+        coinArr.push(obj);
+    })
+    return await coinArr;
+}
+/*
+const setCoinObj = async (arr, data) => {
     let obj = {};
     await arr.forEach(async coinId => {
         let price = await callPrice(data, coinId);
@@ -241,18 +259,25 @@ const setCoinPriceObj = async (arr, data) => {
     })
     return obj;
 }
+ */
+
 router.get('/grab-coin', setMarketData, asyncHandler(async (req, res) => {
     console.log(req.marketData);
     const data = await req.marketData;
     const coinArr = ['BTC', 'ETH', 'LTC'];
-    const newObj = await setCoinPriceObj(coinArr, data);
+    const newObj = await setCoinObj(coinArr, data);
 
 
     res.render('portfolio-test', { newObj })
 }));
 
 router.get('/favorites', setMarketData, asyncHandler(async (req, res) => {
-    console.log(fetchPrice(req.marketData, 'BTC', 'volume_24h'));
+    // console.log('Volume: $' + fetchPriceData(req.marketData, 'BTC', 'percent_change_7d'));
+    //console.log(setfavoritesObj(['BTC', "ETH, LTC"], req.marketData))
+    //console.log(req.marketData[2]);
+    const arr = await setfavoritesObj(['BTC', 'ETH'], req.marketData)
+    const newArr = ['hello', 'sup']
+    console.log(fetchPriceData(req.marketData, 'BTC', 'price'))
     /*
     const data = await req.marketData;
     const user = await db.User.findOne({ where: { id: res.locals.user.id } });
@@ -260,7 +285,7 @@ router.get('/favorites', setMarketData, asyncHandler(async (req, res) => {
     const newObj = await setCoinPriceObj(favoriteArrJson, data);
     res.render('favorites-test', { newObj })
     */
-    res.render('favorites-test')
+    res.render('favorites-test', { arr })
 }));
 
 module.exports = router;
