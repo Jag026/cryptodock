@@ -12,7 +12,8 @@ block content
         th(scope='col') Price
         th(scope='col') Market Cap
         th(scope='col') 24-hr Volume
-        th(scope='col') 1-Day Change
+        th(scope='col') 1 Day Change
+        th(scope='col') 7 Day Change
 
     tbody
       each coin in arr 
@@ -20,8 +21,19 @@ block content
                td
                 img(src=`../public/crypto-icons/${coin.symbol.toLowerCase()}.svg` style={'width':'25px'})
                td= coin.name 
-               td= coin.symbol 
-               td= `$ ${coin.price}` 
-               td= `$ ${coin.market_cap}` 
-               td= `$ ${coin.volume_24h}` 
-               td= `$${(coin.price * (coin.percent_change_24h / 100)).toFixed(2)} ${coin.percent_change_24h}%)`
+               td= coin.symbol
+               if coin.percent_change_24h > 0
+                 td(class='greenNums')= `$${coin.price}` 
+               else 
+                 td(class='redNums')= `$${coin.price}` 
+               td= `$${coin.market_cap}` 
+               td= `$${coin.volume_24h}`
+               if coin.percent_change_24h > 0
+                 td(class='greenNums')= `$${(coin.price * (coin.percent_change_24h / 100)).toFixed(2)} (${coin.percent_change_24h}%)`
+               else 
+                 td(class='redNums')= `$${(coin.price * (coin.percent_change_24h / 100)).toFixed(2)} (${coin.percent_change_24h}%)`  
+               if coin.percent_change_7d > 0
+                 td(class='greenNums')= `$${(coin.price * (coin.percent_change_7d / 100)).toFixed(2)} (${coinpercent_change_7d}%)`
+               else 
+                 td(class='redNums')= `$${(coin.price * (coin.percent_change_7d / 100)).toFixed(2)} (${coin.percent_change_7d}%)`  
+                 

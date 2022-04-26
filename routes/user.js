@@ -244,12 +244,13 @@ const setfavoritesObj = async (arr, data) => {
         const price = fetchPriceData(data, coinSymbol, 'price')
         obj['price'] = price.toFixed(2);
         const market_cap = fetchPriceData(data, coinSymbol, 'market_cap')
-        obj['market_cap'] = market_cap.toLocaleString('en-US').split('.')[0]
+        obj['market_cap'] = market_cap.toLocaleString('en-US').split('.')[0] //loses the decimal places on the output
         const volume_24h = fetchPriceData(data, coinSymbol, 'volume_24h')
-        obj['volume_24h'] = volume_24h.toFixed(0);
+        obj['volume_24h'] = volume_24h.toLocaleString('en-US').split('.')[0];
         const percent_change_24h = fetchPriceData(data, coinSymbol, 'percent_change_24h')
         obj['percent_change_24h'] = percent_change_24h.toFixed(2);
-
+        const percent_change_7d = fetchPriceData(data, coinSymbol, 'percent_change_7d')
+        obj['percent_change_7d'] = percent_change_7d.toFixed(2);
         coinArr.push(obj);
 
     })
@@ -259,7 +260,7 @@ const setfavoritesObj = async (arr, data) => {
 router.get('/grab-coin', setMarketData, asyncHandler(async (req, res) => {
     console.log(req.marketData);
     const data = await req.marketData;
-    const coinArr = ['BTC', 'ETH', 'LTC'];
+    const coinArr = ['BTC', 'ETH', 'ALGO', 'FLOW'];
     const newObj = await setCoinObj(coinArr, data);
 
 
@@ -267,8 +268,7 @@ router.get('/grab-coin', setMarketData, asyncHandler(async (req, res) => {
 }));
 
 router.get('/favorites', setMarketData, asyncHandler(async (req, res) => {
-    const arr = await setfavoritesObj(['BTC', 'ETH', 'LTC', 'BCH', 'XRP'], req.marketData)
-    const newArr = ['hello', 'sup']
+    const arr = await setfavoritesObj(['BTC', 'ETH', 'LTC', 'ALGO', 'CAKE'], req.marketData)
     res.render('favorites-test', { arr })
 }));
 
