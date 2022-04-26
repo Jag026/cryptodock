@@ -268,7 +268,10 @@ router.get('/grab-coin', setMarketData, asyncHandler(async (req, res) => {
 }));
 
 router.get('/favorites', setMarketData, asyncHandler(async (req, res) => {
-    const arr = await setfavoritesObj(['BTC', 'ETH', 'LTC', 'ALGO', 'CAKE'], req.marketData)
+    const user = await db.User.findOne({ where: { id: res.locals.user.id } });
+    const coinFavoritesJSON = await user.favoriteCoins;
+    const coinFavorites = await JSON.parse(JSON.stringify(coinFavoritesJSON)); 
+    const arr = await setfavoritesObj(coinFavorites, req.marketData)
     res.render('favorites-test', { arr })
 }));
 
