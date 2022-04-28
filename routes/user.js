@@ -273,8 +273,9 @@ const setfavoritesObj = async (arr, data) => {
 
 router.get('/favorites', setMarketData, csrfProtection, asyncHandler(async (req, res) => {
     const user = await db.User.findOne({ where: { id: res.locals.user.id } });
+
     const coinFavoritesJSON = await user.favoriteCoins;
-    const coinFavorites = await JSON.parse(coinFavoritesJSON); 
+    const coinFavorites = await JSON.parse(coinFavoritesJSON);
     const arr = await setfavoritesObj(coinFavorites, req.marketData)
     res.render('favorites-test', {
         user,
@@ -324,5 +325,19 @@ router.post('/add-favorite-coin', csrfProtection, favoriteCoinValidators,
             });
         }
 }));
+
+
+router.get('/fix-favorite-coin', csrfProtection, favoriteCoinValidators,
+    asyncHandler(async (req, res) => {
+        const userToUpdate = await db.User.findOne({ where: { id: res.locals.user.id } });
+
+        let user = {
+            favoriteCoins: JSON.stringify(["BTC", "ETH", "BCH"])
+        };
+        await userToUpdate.update(user);
+        res.redirect('/user/favorites');
+
+    }));
+
 
 module.exports = router;
