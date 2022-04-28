@@ -273,9 +273,11 @@ const setfavoritesObj = async (arr, data) => {
 
 router.get('/favorites', setMarketData, csrfProtection, asyncHandler(async (req, res) => {
     const user = await db.User.findOne({ where: { id: res.locals.user.id } });
-    const coinFavoritesJSON = await user.favoriteCoins;
-    const coinFavorites = await JSON.parse(coinFavoritesJSON); 
-    const arr = await setfavoritesObj(coinFavorites, req.marketData)
+
+    // const coinFavoritesJSON = await user.favoriteCoins;
+    // const coinFavorites = await JSON.parse(coinFavoritesJSON);
+    // const arr = await setfavoritesObj(coinFavorites, req.marketData)
+    const arr = [];
     res.render('favorites-test', {
         user,
         arr,
