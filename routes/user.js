@@ -324,8 +324,26 @@ router.post('/add-favorite-coin', csrfProtection, favoriteCoinValidators,
                 csrfToken: req.csrfToken(),
             });
         }
-}));
+    }));
 
+router.post('/delete-favorite-coin', csrfProtection,
+    asyncHandler(async (req, res) => {
+        const userToUpdate = await db.User.findOne({ where: { id: res.locals.user.id } });
+        const originalFavoriteCoins = JSON.parse(userToUpdate.favoriteCoins);
+        let coinToDelete = req.body.symbol
+        var newFavoriteCoins = originalFavoriteCoins.filter(function (f) { return f !== coinToDelete })
+
+        console.log(coinToDelete);
+
+        let user = {
+            emailAddress: userToUpdate.emailAddress,
+            firstName: userToUpdate.firstName,
+            lastName: userToUpdate.lastName,
+            favoriteCoins: JSON.stringify(newFavoriteCoins)
+        };
+        await userToUpdate.update(user);
+        res.redirect('/user/favorites');
+    }));
 
 router.get('/fix-favorite-coin', csrfProtection, favoriteCoinValidators,
     asyncHandler(async (req, res) => {
