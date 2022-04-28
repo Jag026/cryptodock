@@ -37,3 +37,18 @@ block content
                else 
                  td(class='redNums')= `$${(coin.price * (coin.percent_change_7d / 100)).toFixed(2)} (${coin.percent_change_7d}%)`  
                  
+  h3 Add Coin
+  if errors
+    div(class='alert alert-danger' role='alert')
+      p The following error(s) occurred:
+      ul
+        each error in errors
+          li= error
+  form(action=`/user/add-favorite-coin` method='post' class='')
+    input(type='hidden' name='_csrf' value=csrfToken)
+    div(class='form-group')
+      label(for='favoriteCoins') Enter Coin Symbol
+      input(type='text' id='favoriteCoins' name='favoriteCoins' value=user.favoriteCoins class='form-control')
+    div(class='py-4')
+      button(type='submit' class='btn btn-primary') Add Coin
+  br

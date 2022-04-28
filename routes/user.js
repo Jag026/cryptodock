@@ -128,6 +128,20 @@ const loginValidators = [
         .withMessage('Please provide a value for Password'),
 ];
 
+
+router.get('/edit', csrfProtection,
+    asyncHandler(async (req, res) => {
+        const userId = parseInt(req.params.id, 10);
+        const id = userId
+        const User = await db.Part.findByPk(userId);
+
+        res.render('favorites-test', {
+            user,
+            csrfToken: req.csrfToken(),
+        });
+    }));
+
+
 router.post('/login', csrfProtection, loginValidators,
     asyncHandler(async (req, res) => {
         const {
@@ -151,7 +165,7 @@ router.post('/login', csrfProtection, loginValidators,
                     // If the password hashes match, then login the user
                     // and redirect them to the default route.
                     loginUser(req, res, user);
-                    res.redirect('/user/login-index');
+                    res.redirect('/user/favorites');
                 }
             }
 
@@ -257,22 +271,58 @@ const setfavoritesObj = async (arr, data) => {
     return await coinArr;
 }
 
-router.get('/grab-coin', setMarketData, asyncHandler(async (req, res) => {
-    console.log(req.marketData);
-    const data = await req.marketData;
-    const coinArr = ['BTC', 'ETH', 'ALGO', 'FLOW'];
-    const newObj = await setCoinObj(coinArr, data);
-
-
-    res.render('portfolio-test', { newObj })
-}));
-
-router.get('/favorites', setMarketData, asyncHandler(async (req, res) => {
+router.get('/favorites', setMarketData, csrfProtection, asyncHandler(async (req, res) => {
     const user = await db.User.findOne({ where: { id: res.locals.user.id } });
     const coinFavoritesJSON = await user.favoriteCoins;
-    const coinFavorites = await JSON.parse(JSON.stringify(coinFavoritesJSON)); 
+    const coinFavorites = await JSON.parse(coinFavoritesJSON); 
     const arr = await setfavoritesObj(coinFavorites, req.marketData)
-    res.render('favorites-test', { arr })
+    res.render('favorites-test', {
+        user,
+        arr,
+        csrfToken: req.csrfToken(),
+ })
+}));
+
+
+const favoriteCoinValidators = [
+    check('favoriteCoins')
+        .exists({ checkFalsy: true })
+        .withMessage('Please provide a value for First Name')
+        .isLength({ max: 4 })
+        .withMessage('Symbol must not be more than 4 characters long'),
+
+];
+
+router.post('/add-favorite-coin', csrfProtection, favoriteCoinValidators,
+    asyncHandler(async (req, res) => {
+        const userToUpdate = await db.User.findOne({ where: { id: res.locals.user.id } });
+
+        const originalFavoriteCoins = JSON.parse(userToUpdate.favoriteCoins);
+        let inputtedCoins = req.body.favoriteCoins
+        originalFavoriteCoins.push(inputtedCoins)
+        let newFavoriteCoins = originalFavoriteCoins;
+        console.log(newFavoriteCoins);
+
+        let user =  {
+            emailAddress: userToUpdate.emailAddress,
+            firstName: userToUpdate.firstName,
+            lastName: userToUpdate.lastName,
+            favoriteCoins: JSON.stringify(newFavoriteCoins)
+        };
+
+        const validatorErrors = validationResult(req);
+
+        if (validatorErrors.isEmpty()) {
+            await userToUpdate.update(user);
+            res.redirect('/user/favorites');
+        } else {
+            const errors = validatorErrors.array().map((error) => error.msg);
+            res.render('user-login', {
+                user,
+                errors,
+                csrfToken: req.csrfToken(),
+            });
+        }
 }));
 
 module.exports = router;
