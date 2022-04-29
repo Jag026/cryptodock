@@ -229,11 +229,6 @@ const fetchPriceData = (cryptoData, symbol, dataPointStr) => {
     return coin['quote']['USD'][dataPointStr];
     };
 
-    // not used at the moment
-const callPrice = async (cryptoData, symbol, dataPointStr) => {
-    const a = await fetchPriceData(cryptoData, symbol, dataPointStr);
-    return a;
-};
 
 // fetches datapoint other than price
 const fetchDataPoint = (cryptoData, symbol, dataPointStr) => {
@@ -294,15 +289,16 @@ const favoriteCoinValidators = [
 
 ];
 
-router.post('/add-favorite-coin', csrfProtection, favoriteCoinValidators,
+//working post route
+router.post('/add-favorite-coin', setMarketData, csrfProtection, favoriteCoinValidators,
     asyncHandler(async (req, res) => {
         const userToUpdate = await db.User.findOne({ where: { id: res.locals.user.id } });
 
         const originalFavoriteCoins = JSON.parse(userToUpdate.favoriteCoins);
-        let inputtedCoins = req.body.favoriteCoins
-        originalFavoriteCoins.push(inputtedCoins)
+        let newCoinToAdd = req.body.favoriteCoins
+        originalFavoriteCoins.push(newCoinToAdd)
         let newFavoriteCoins = originalFavoriteCoins;
-        console.log(newFavoriteCoins);
+        console.log(req.marketData[0]['symbol']);
 
         let user =  {
             emailAddress: userToUpdate.emailAddress,
@@ -325,6 +321,17 @@ router.post('/add-favorite-coin', csrfProtection, favoriteCoinValidators,
             });
         }
     }));
+
+const checkValidCoin = (marketData, coinSymbol) => {
+    marketData.forEach(async coin => {
+        if (coin['symbol'] === coinSymbol) {
+            console.log('-----------------------This coin is in the DB:' + coinSymbol)
+            console.log('-----------------------This coin is in the DB:' + marketData[0]['symbol'].includes(coinSymbol));
+            return true;
+        }
+    })
+}
+
 
 router.post('/delete-favorite-coin', csrfProtection,
     asyncHandler(async (req, res) => {
