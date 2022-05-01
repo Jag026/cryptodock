@@ -272,8 +272,15 @@ router.get('/favorites', setMarketData, csrfProtection, asyncHandler(async (req,
     const coinFavoritesJSON = await user.favoriteCoins;
     const coinFavorites = await JSON.parse(coinFavoritesJSON);
     const arr = await setfavoritesObj(coinFavorites, req.marketData)
+
+    const symbolArr = [];
+    await req.marketData.forEach(coin => {
+        symbolArr.push(coin["symbol"]);
+    })
+
     res.render('favorites-test', {
         user,
+        symbolArr,
         arr,
         csrfToken: req.csrfToken(),
  })
@@ -298,7 +305,6 @@ router.post('/add-favorite-coin', setMarketData, csrfProtection, favoriteCoinVal
         let newCoinToAdd = req.body.favoriteCoins
         originalFavoriteCoins.push(newCoinToAdd)
         let newFavoriteCoins = originalFavoriteCoins;
-        console.log(req.marketData[0]['symbol']);
 
         let user =  {
             emailAddress: userToUpdate.emailAddress,
@@ -322,15 +328,6 @@ router.post('/add-favorite-coin', setMarketData, csrfProtection, favoriteCoinVal
         }
     }));
 
-const checkValidCoin = (marketData, coinSymbol) => {
-    marketData.forEach(async coin => {
-        if (coin['symbol'] === coinSymbol) {
-            console.log('-----------------------This coin is in the DB:' + coinSymbol)
-            console.log('-----------------------This coin is in the DB:' + marketData[0]['symbol'].includes(coinSymbol));
-            return true;
-        }
-    })
-}
 
 
 router.post('/delete-favorite-coin', csrfProtection,
@@ -361,6 +358,23 @@ router.get('/fix-favorite-coin', csrfProtection, favoriteCoinValidators,
         };
         await userToUpdate.update(user);
         res.redirect('/user/favorites');
+
+    }));
+
+router.get('/search', csrfProtection, setMarketData, favoriteCoinValidators,
+    asyncHandler(async (req, res) => {
+        // const user = await db.User.findOne({ where: { id: res.locals.user.id } });
+        const data = await req.marketData;
+        const symbolArr = [];
+        await data.forEach(coin => {
+            symbolArr.push(coin["symbol"]);
+        })
+        console.log(symbolArr)
+        res.render('search', {
+            // user,
+            data,
+            symbolArr
+        });
 
     }));
 

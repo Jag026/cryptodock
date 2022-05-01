@@ -1,0 +1,17 @@
+extends layout.pug
+
+
+block content
+  link(rel='stylesheet' href='../public/styles/dropdown.css')
+  script(src='../public/scripts/dropdown.js')
+
+  p Add Coin
+  div(class="dropdown")
+    button(onclick='myFunction()' class="dropbtn") Dropdown
+    div(id="myDropdown" class="dropdown-content")
+      input(type="text" placeholder="Search.." id="myInput" onkeyup="filterFunction()")
+      each symbol in symbolArr
+        div(style={"display" : "none"})
+         img(src=`../public/crypto-icons/${symbol.toLowerCase()}.svg` style={"width":"20px"})
+         a= symbol 
+         button Add Coin

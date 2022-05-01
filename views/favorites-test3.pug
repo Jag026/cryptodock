@@ -49,32 +49,20 @@ block content
                    input(type='hidden' name='symbol' value=coin.symbol)
                    div(class='py-4')
                      button(type='submit' class='btn btn-primary') Remove
+                                        
+  h3 Add Coin
+  if errors
+    div(class='alert alert-danger' role='alert')
+      p The following error(s) occurred:
+      ul
+        each error in errors
+          li= error
+  form(action=`/user/add-favorite-coin` method='post' class='')
+    input(type='hidden' name='_csrf' value=csrfToken)
+    div(class='form-group')
+      label(for='favoriteCoins') Enter Coin Symbol
+      input(type='text' id='favoriteCoins' name='favoriteCoins' value='' class='form-control')
+    div(class='py-4')
+      button(type='submit' class='btn btn-primary') Add Coin
+  br
 
-
-  link(rel='stylesheet' href='../public/styles/dropdown.css')
-  script(src='../public/scripts/dropdown.js')
-
-  p Add A Coin
-  div(class="dropdown")
-    div(id="myDropdown" class="dropdown-content")
-      input(type="text" placeholder="Search.." id="myInput" onkeyup="filterFunction()")
-      each symbol in symbolArr
-        div(style={"display" : "flex"})
-         img(src=`../public/crypto-icons/${symbol.toLowerCase()}.svg` style={"width":"20px", "display": "none"})
-         a(style={"display" : "none"})= symbol 
-         form(action=`/user/add-favorite-coin` method='post' class='')
-            input(type='hidden' name='_csrf' value=csrfToken)
-            input(type='hidden' name='favoriteCoins' value=symbol)
-            button(type='submit' class='btn btn-primary' style={"display" : "none"}) Add Coin                 
-  br
-  br
-  br
-  br
-  br
-  br
-  br
-  br
-  br
-  br
-  br
-  br
