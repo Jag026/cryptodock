@@ -361,22 +361,6 @@ router.get('/fix-favorite-coin', csrfProtection, favoriteCoinValidators,
 
     }));
 
-router.get('/search', csrfProtection, setMarketData, favoriteCoinValidators,
-    asyncHandler(async (req, res) => {
-        // const user = await db.User.findOne({ where: { id: res.locals.user.id } });
-        const data = await req.marketData;
-        const symbolArr = [];
-        await data.forEach(coin => {
-            symbolArr.push(coin["symbol"]);
-        })
-        console.log(symbolArr)
-        res.render('search', {
-            // user,
-            data,
-            symbolArr
-        });
-
-    }));
 
 
 module.exports = router;
