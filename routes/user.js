@@ -388,17 +388,30 @@ router.get('/portfolio', setMarketData, csrfProtection, asyncHandler(async (req,
     for (const key in coinPortfolio) {
         coinArr.push(key);
         console.log(key);
-
     }
 
-    const arr = await setPortfolioObj(coinArr, req.marketData)
-    console.log(arr);
+    const priceArr = [];
+    coinArr.forEach(coin => {
+        let price = fetchPriceData(req.marketData, coin, 'price')
+        priceArr.push(price * coinPortfolio[coin]);
+        console.log(price);
+    })
 
+    const initialValue = 0;
+    let portfolioTotalValue = priceArr.reduce(
+        (previousValue, currentValue) => previousValue + currentValue,
+        initialValue
+    );
+
+    portfolioTotalValue = portfolioTotalValue.toLocaleString('en-US').split('.')[0];
+
+    const arr = await setPortfolioObj(coinArr, req.marketData)
 
     res.render('portfolio', {
         user,
         arr,
         coinPortfolio,
+        portfolioTotalValue,
         csrfToken: req.csrfToken(),
     })
 }));
