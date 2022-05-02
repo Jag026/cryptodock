@@ -2,6 +2,8 @@ extends layout.pug
 
 block content
   h1 Portfolio
+  - var amount = 0;
+  h3= amount
   div(class='py-3')
   table(class='table table-striped table-hover')
     thead(class='thead-dark')
@@ -31,6 +33,12 @@ block content
                  td(class='greenNums')= `$${(coin.price * (coin.percent_change_24h / 100)).toFixed(2)} (${coin.percent_change_24h}%)`
                else 
                  td(class='redNums')= `$${(coin.price * (coin.percent_change_24h / 100)).toFixed(2)} (${coin.percent_change_24h}%)`  
+               td= coinPortfolio[coin.symbol]
+               td= coinPortfolio[coin.symbol] * coin.price 
+               if coin.percent_change_24h > 0
+                 td(class='greenNums')= `$${(coin.price * (coin.percent_change_24h / 100)).toFixed(2)} (${coin.percent_change_24h}%)`
+               else 
+                 td(class='redNums')= `$${(coin.price * (coin.percent_change_24h / 100)).toFixed(2)} (${coin.percent_change_24h}%)`
                td
                  if errors
                   div(class='alert alert-danger' role='alert')
@@ -43,4 +51,3 @@ block content
                    input(type='hidden' name='symbol' value=coin.symbol)
                    div(class='py-4')
                      button(type='submit' class='btn btn-primary') Remove
-
