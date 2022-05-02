@@ -361,6 +361,46 @@ router.get('/fix-favorite-coin', csrfProtection, favoriteCoinValidators,
 
     }));
 
+const setPortfolioObj = async (arr, data) => {
+    let coinArr = [];
+    await arr.forEach(async coinSymbol => {
+        let obj = {};
+        const name = fetchDataPoint(data, coinSymbol, 'name')
+        obj['name'] = name;
+        const symbol = fetchDataPoint(data, coinSymbol, 'symbol')
+        obj['symbol'] = symbol;
+        const price = fetchPriceData(data, coinSymbol, 'price')
+        obj['price'] = price.toFixed(2);
+        const percent_change_24h = fetchPriceData(data, coinSymbol, 'percent_change_24h')
+        obj['percent_change_24h'] = percent_change_24h.toFixed(2);
+        coinArr.push(obj);
 
+    })
+    return await coinArr;
+}
+
+router.get('/portfolio', setMarketData, csrfProtection, asyncHandler(async (req, res) => {
+    const user = await db.User.findOne({ where: { id: res.locals.user.id } });
+
+    const coinPortfolioJSON = await user.portfolioCoins;
+    const coinPortfolio = await coinPortfolioJSON;
+    const coinArr = [];
+    for (const key in coinPortfolio) {
+        coinArr.push(key);
+        console.log(key);
+
+    }
+
+    const arr = await setPortfolioObj(coinArr, req.marketData)
+    console.log(arr);
+
+
+    res.render('portfolio', {
+        user,
+        arr,
+        coinPortfolio,
+        csrfToken: req.csrfToken(),
+    })
+}));
 
 module.exports = router;
