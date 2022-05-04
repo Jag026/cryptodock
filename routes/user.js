@@ -429,9 +429,15 @@ router.get('/portfolio', setMarketData, csrfProtection, asyncHandler(async (req,
 
     const arr = await setPortfolioObj(coinArr, req.marketData)
 
+    const symbolArr = [];
+    await req.marketData.forEach(coin => {
+        symbolArr.push(coin["symbol"]);
+    })
+
     res.render('portfolio', {
         user,
         arr,
+        symbolArr,
         coinPortfolio,
         portfolioTotalValue,
         oneDayPortfolioPriceDifference,
@@ -439,5 +445,16 @@ router.get('/portfolio', setMarketData, csrfProtection, asyncHandler(async (req,
         csrfToken: req.csrfToken(),
     })
 }));
+
+//individual coin route
+router.get('/coin/:symbol', setMarketData, csrfProtection,
+    asyncHandler(async (req, res) => {
+        const symbol = req.params.symbol;
+        console.log(symbol);
+
+        res.render('coin', {
+            csrfToken: req.csrfToken(),
+        });
+    }));
 
 module.exports = router;

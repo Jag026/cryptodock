@@ -56,3 +56,20 @@ block content
                    input(type='hidden' name='symbol' value=coin.symbol)
                    div(class='py-4')
                      button(type='submit' class='btn btn-primary') Remove
+
+  link(rel='stylesheet' href='../public/styles/dropdown.css')
+  script(src='../public/scripts/dropdown.js')
+
+  br                   
+  h4 Add Coin To Portfolio
+  div(class="dropdown")
+    div(id="myDropdown" class="dropdown-content")
+      input(type="text" placeholder="Search.." id="myInput" onkeyup="filterFunction()")
+      each symbol in symbolArr
+        div(style={"display" : "flex"})
+         img(src=`../public/crypto-icons/${symbol.toLowerCase()}.svg` style={"width":"20px", "display": "none"})
+         a(style={"display" : "none"})= symbol 
+         form(action=`/user/add-favorite-coin` method='post' class='')
+            input(type='hidden' name='_csrf' value=csrfToken)
+            input(type='hidden' name='favoriteCoins' value=symbol)
+            button(type='submit' class='btn btn-primary' style={"display" : "none"}) Add Coin     
