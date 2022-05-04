@@ -3,8 +3,17 @@ extends layout.pug
 block content
   h1 Portfolio
   h3= `$` + portfolioTotalValue
-  h4= `$` + oneDayPortfolioPriceDifference
-  h5= oneDayPortfolioPercentDifference + `%`
+  h7 24 hour change:
+  div(style={"display": "flex"})
+    if oneDayPortfolioPercentDifference > 0
+      h4(class='greenNums')= `$${oneDayPortfolioPriceDifference}` 
+    else
+      h4(class='redNums')= `$${oneDayPortfolioPriceDifference}`  
+    if oneDayPortfolioPercentDifference > 0
+      h4(class='greenNums' style={"align-self": "flex-end", "padding-bottom": "5px", "margin-left": "5px"})= `(${oneDayPortfolioPercentDifference}%)` 
+    else
+      h6(class='redNums' style={"align-self": "flex-end", "padding-bottom": "5px", "margin-left": "5px"})= `(${oneDayPortfolioPercentDifference}%)`  
+
   div(class='py-3')
   table(class='table table-striped table-hover')
     thead(class='thead-dark')
@@ -14,7 +23,6 @@ block content
         th(scope='col') Symbol
         th(scope='col') Price
         th(scope='col') Amount Owned
-        th(scope='col') Total Value
         th(scope='col') Total Value
         th(scope='col') 1 Day Change
         th(scope='col')
@@ -30,12 +38,8 @@ block content
                  td(class='greenNums')= `$${coin.price}` 
                else 
                  td(class='redNums')= `$${coin.price}` 
-               if coin.percent_change_24h > 0
-                 td(class='greenNums')= `$${(coin.price * (coin.percent_change_24h / 100)).toFixed(2)} (${coin.percent_change_24h}%)`
-               else 
-                 td(class='redNums')= `$${(coin.price * (coin.percent_change_24h / 100)).toFixed(2)} (${coin.percent_change_24h}%)`  
                td= coinPortfolio[coin.symbol]
-               td= coinPortfolio[coin.symbol] * coin.price 
+               td= `$${(coinPortfolio[coin.symbol] * coin.price ).toLocaleString('en-US').split('.')[0]}`
                if coin.percent_change_24h > 0
                  td(class='greenNums')= `$${(coin.price * (coin.percent_change_24h / 100)).toFixed(2)} (${coin.percent_change_24h}%)`
                else 
