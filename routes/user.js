@@ -390,20 +390,42 @@ router.get('/portfolio', setMarketData, csrfProtection, asyncHandler(async (req,
         console.log(key);
     }
 
+    //sets an arr of prices based on User's portfolio
     const priceArr = [];
     coinArr.forEach(coin => {
         let price = fetchPriceData(req.marketData, coin, 'price')
         priceArr.push(price * coinPortfolio[coin]);
-        console.log(price);
+        console.log(`Today's price: ${price}`);
     })
 
+    //sets yesterday prices to compare with current
+    const yesterdayPriceArr = [];
+    coinArr.forEach(coin => {
+        let price = fetchPriceData(req.marketData, coin, 'price')
+        let yesterdayPrice = (price - ((fetchPriceData(req.marketData, coin, 'percent_change_24h') / 100) * price));
+        yesterdayPriceArr.push(yesterdayPrice * coinPortfolio[coin]);
+        console.log(`Yesterday's price: ${yesterdayPrice}`);
+    })
+
+    // reduces array into a total portfolio amount
     const initialValue = 0;
     let portfolioTotalValue = priceArr.reduce(
         (previousValue, currentValue) => previousValue + currentValue,
         initialValue
     );
 
+    const yesterdayInitialValue = 0;
+    let yesterdayPortfolioTotalValue = yesterdayPriceArr.reduce(
+        (previousValue, currentValue) => previousValue + currentValue,
+        yesterdayInitialValue
+    );
+
+    //difference between today and yesterday's prices and percent
+    let oneDayPortfolioPriceDifference = portfolioTotalValue - yesterdayPortfolioTotalValue;
+    const oneDayPortfolioPercentDifference = ((portfolioTotalValue - yesterdayPortfolioTotalValue) / portfolioTotalValue * 100).toFixed(2);
     portfolioTotalValue = portfolioTotalValue.toLocaleString('en-US').split('.')[0];
+    yesterdayPortfolioTotalValue = yesterdayPortfolioTotalValue.toLocaleString('en-US').split('.')[0];
+    oneDayPortfolioPriceDifference = oneDayPortfolioPriceDifference.toLocaleString('en-US').split('.')[0];
 
     const arr = await setPortfolioObj(coinArr, req.marketData)
 
@@ -412,6 +434,8 @@ router.get('/portfolio', setMarketData, csrfProtection, asyncHandler(async (req,
         arr,
         coinPortfolio,
         portfolioTotalValue,
+        oneDayPortfolioPriceDifference,
+        oneDayPortfolioPercentDifference,
         csrfToken: req.csrfToken(),
     })
 }));
