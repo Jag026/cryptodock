@@ -449,8 +449,9 @@ router.get('/portfolio', setMarketData, csrfProtection, asyncHandler(async (req,
 //individual coin route
 router.get('/coin/:symbol', setMarketData, csrfProtection,
     asyncHandler(async (req, res) => {
-        const symbol = req.params.symbol;
-        console.log(symbol);
+        const symbol = await req.params.symbol.toUpperCase();
+        const price =  fetchPriceData(await req.marketData, symbol, 'price')
+        console.log(price)
 
         res.render('coin', {
             csrfToken: req.csrfToken(),
