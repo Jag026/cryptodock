@@ -69,7 +69,7 @@ block content
         div(style={"display" : "flex"})
          img(src=`../public/crypto-icons/${symbol.toLowerCase()}.svg` style={"width":"20px", "display": "none"})
          a(style={"display" : "none"})= symbol 
-         form(action=`/user/add-favorite-coin` method='post' class='')
+         form(action=`/user/coin/${symbol}` method='get' class='')
             input(type='hidden' name='_csrf' value=csrfToken)
             input(type='hidden' name='favoriteCoins' value=symbol)
             button(type='submit' class='btn btn-primary' style={"display" : "none"}) Add Coin     
