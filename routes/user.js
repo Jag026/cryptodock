@@ -450,10 +450,13 @@ router.get('/portfolio', setMarketData, csrfProtection, asyncHandler(async (req,
 router.get('/coin/:symbol', setMarketData, csrfProtection,
     asyncHandler(async (req, res) => {
         const symbol = await req.params.symbol.toUpperCase();
+        const name = fetchDataPoint(await req.marketData, symbol, 'name')
         const price =  fetchPriceData(await req.marketData, symbol, 'price')
         console.log(price)
 
         res.render('coin', {
+            price,
+            name,
             csrfToken: req.csrfToken(),
         });
     }));
