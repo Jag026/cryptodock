@@ -446,18 +446,27 @@ router.get('/portfolio', setMarketData, csrfProtection, asyncHandler(async (req,
     })
 }));
 
+
 //individual coin route
 router.get('/coin/:symbol', setMarketData, csrfProtection,
     asyncHandler(async (req, res) => {
         const symbol = await req.params.symbol.toUpperCase();
         const name = fetchDataPoint(await req.marketData, symbol, 'name')
-        const price =  fetchPriceData(await req.marketData, symbol, 'price')
-        console.log(price)
-
+        const price = fetchPriceData(await req.marketData, symbol, 'price')
+        let arr = [
+            { x: 1501048673000, y: 40.896 },
+            { x: 1501052273000, y: 40.896 },
+            { x: 1501055873000, y: 56.625 },
+            { x: 1501059473000, y: 26.003 },
+            { x: 1501063073000, y: 20.376 },
+            { x: 1501066673000, y: 19.774 },
+        ]
+        arr = JSON.stringify(arr)
+        
         res.render('coin', {
             price,
             name,
-            csrfToken: req.csrfToken(),
+            arr,
         });
     }));
 
