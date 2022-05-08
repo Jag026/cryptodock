@@ -453,6 +453,8 @@ router.get('/coin/:symbol', setMarketData, csrfProtection,
         const symbol = await req.params.symbol.toUpperCase();
         const name = fetchDataPoint(await req.marketData, symbol, 'name')
         const price = fetchPriceData(await req.marketData, symbol, 'price')
+
+        /*
         let arr = [
             { x: 1501048673000, y: 40.896 },
             { x: 1501052273000, y: 40.896 },
@@ -460,6 +462,15 @@ router.get('/coin/:symbol', setMarketData, csrfProtection,
             { x: 1501059473000, y: 26.003 },
             { x: 1501063073000, y: 20.376 },
             { x: 1501066673000, y: 19.774 },
+        ]
+        */
+        let arr = [
+            { x: 1, y: 40.896, label: "2022-05-01" },
+            { x: 2, y: 40.896, label: "2022-05-02" },
+            { x: 3, y: 56.625, label: "2022-05-03" },
+            { x: 4, y: 26.003, label: "2022-05-04" },
+            { x: 5, y: 20.376, label: "2022-05-05" },
+            { x: 6, y: 19.774, label: "2022-05-06" },
         ]
         arr = JSON.stringify(arr)
         
