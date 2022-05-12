@@ -16,3 +16,8 @@ The main features of this app are:
 ## Home Page
 When a user first lands on our app this is the first page they will see. Here they can either login or signup to gain access to the sites features.
 
+![](https://user-images.githubusercontent.com/74638539/168142895-c9ea0c86-ab66-4b1e-b281-25cb4925e60b.png)
+
+## Favorites Page
+Users can search for coins and create a "favorites list"
+<img width="1307" alt="Screen Shot 2022-05-12 at 1 24 35 PM" src="https://user-images.githubusercontent.com/74638539/168143326-7ba8310d-517f-418e-8990-8ca6a76f6f11.png">
