@@ -13,5 +13,6 @@ The main features of this app are:
 - Delete/Edit lists - any logged in user can edit their portfolio/favorites list
 - Search - users can search for a specific coin
 
-##Home Page
+## Home Page
 When a user first lands on our app this is the first page they will see. Here they can either login or signup to gain access to the sites features.
+
